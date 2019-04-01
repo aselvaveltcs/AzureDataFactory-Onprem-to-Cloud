@@ -11,6 +11,12 @@
 		"OnPrem_MySQL_Linked_Service_connectionString": {
 			"value": ""
 		},
+		"Customer_Blob_Storage_properties_typeProperties_fileName": {
+			"value": " @concat('Customer-',pipeline().RunId, '.txt')"
+		},
+		"Customer_Blob_Storage_properties_typeProperties_folderPath": {
+			"value": "sm-onprem-to-cloud-source/customer"
+		},
 		"Film_Blob_Storage_properties_typeProperties_fileName": {
 			"value": "@concat('Film-',pipeline().RunId, '.txt')"
 		},

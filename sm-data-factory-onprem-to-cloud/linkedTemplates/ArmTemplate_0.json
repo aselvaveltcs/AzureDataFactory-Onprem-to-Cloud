@@ -15,6 +15,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
 		},
+		"Customer_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": " @concat('Customer-',pipeline().RunId, '.txt')"
+		},
+		"Customer_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/customer"
+		},
 		"Film_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Film-',pipeline().RunId, '.txt')"
@@ -84,6 +92,92 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/Data-Gateway-Connect-OnPrem')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Customer_Blob_Storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "NO_DATA",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": "[parameters('Customer_Blob_Storage_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('Customer_Blob_Storage_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Customer_OnPrem_Mysql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OnPrem_MySQL_Linked_Service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RelationalTable",
+				"structure": [
+					{
+						"name": "customer_id",
+						"type": "Int32"
+					},
+					{
+						"name": "store_id",
+						"type": "Byte"
+					},
+					{
+						"name": "first_name",
+						"type": "String"
+					},
+					{
+						"name": "last_name",
+						"type": "String"
+					},
+					{
+						"name": "email",
+						"type": "String"
+					},
+					{
+						"name": "address_id",
+						"type": "Int32"
+					},
+					{
+						"name": "active",
+						"type": "Int16"
+					},
+					{
+						"name": "create_date",
+						"type": "DateTime"
+					},
+					{
+						"name": "last_update",
+						"type": "DateTime"
+					}
+				],
+				"typeProperties": {
+					"tableName": "`customer`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
 			]
 		},
 		{
@@ -198,7 +292,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy-Film-OnPremMySql-To-Azure",
+						"name": "Film_Table",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -233,13 +327,52 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Customer_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `customer`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Customer_OnPrem_Mysql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Customer_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Film_OnPrem_MySql')]",
-				"[concat(variables('factoryId'), '/datasets/Film_Blob_Storage')]"
+				"[concat(variables('factoryId'), '/datasets/Film_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Customer_OnPrem_Mysql')]",
+				"[concat(variables('factoryId'), '/datasets/Customer_Blob_Storage')]"
 			]
 		}
 	]
