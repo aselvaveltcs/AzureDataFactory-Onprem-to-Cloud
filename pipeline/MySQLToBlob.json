@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy-Film-OnPremMySql-To-Azure",
+				"name": "Film_Table",
 				"type": "Copy",
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -31,6 +31,39 @@
 				"outputs": [
 					{
 						"referenceName": "Film_Blob_Storage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Customer_Table",
+				"type": "Copy",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Customer_Blob_Storage",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Customer_Blob_Storage",
 						"type": "DatasetReference"
 					}
 				]
