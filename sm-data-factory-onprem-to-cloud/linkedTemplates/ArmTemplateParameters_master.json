@@ -12,7 +12,7 @@
 			"value": ""
 		},
 		"Customer_Blob_Storage_properties_typeProperties_fileName": {
-			"value": " @concat('Customer-',pipeline().RunId, '.txt')"
+			"value": "@concat('Customer-',pipeline().RunId, '.txt')"
 		},
 		"Customer_Blob_Storage_properties_typeProperties_folderPath": {
 			"value": "sm-onprem-to-cloud-source/customer"

@@ -17,7 +17,7 @@
 		},
 		"Customer_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": " @concat('Customer-',pipeline().RunId, '.txt')"
+			"defaultValue": "@concat('Customer-',pipeline().RunId, '.txt')"
 		},
 		"Customer_Blob_Storage_properties_typeProperties_folderPath": {
 			"type": "string",
@@ -115,7 +115,10 @@
 						"skipLineCount": 0,
 						"firstRowAsHeader": false
 					},
-					"fileName": "[parameters('Customer_Blob_Storage_properties_typeProperties_fileName')]",
+					"fileName": {
+						"value": "[parameters('Customer_Blob_Storage_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
 					"folderPath": "[parameters('Customer_Blob_Storage_properties_typeProperties_folderPath')]"
 				}
 			},

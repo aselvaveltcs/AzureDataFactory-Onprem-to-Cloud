@@ -17,7 +17,7 @@
 		},
 		"Customer_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": " @concat('Customer-',pipeline().RunId, '.txt')"
+			"defaultValue": "@concat('Customer-',pipeline().RunId, '.txt')"
 		},
 		"Customer_Blob_Storage_properties_typeProperties_folderPath": {
 			"type": "string",
