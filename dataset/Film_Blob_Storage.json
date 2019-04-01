@@ -20,9 +20,7 @@
 				"value": "@concat('Film-',pipeline().RunId, '.txt')",
 				"type": "Expression"
 			},
-			"folderPath": "sm-onprem-to-cloud-source/film",
-			"modifiedDatetimeStart": "2019-04-01T19:00:00Z",
-			"modifiedDatetimeEnd": "2019-04-02T08:00:00Z"
+			"folderPath": "sm-onprem-to-cloud-source/film"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
