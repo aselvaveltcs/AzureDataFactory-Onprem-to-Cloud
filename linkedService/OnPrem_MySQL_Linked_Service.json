@@ -1,0 +1,15 @@
+{
+	"name": "OnPrem_MySQL_Linked_Service",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "MySql",
+		"typeProperties": {
+			"connectionString": "server=localhost;port=3306;database=sakila;user=root;sslmode=1;usesystemtruststore=0",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzYjdkYzVmYy04ZDgwLTQ2N2MtOTA4ZC0xYzJlMDE3ODk5MWYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "Data-Gateway-Connect-OnPrem",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

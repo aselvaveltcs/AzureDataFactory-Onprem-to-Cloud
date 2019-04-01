@@ -1,0 +1,6 @@
+{
+	"name": "Data-Gateway-Connect-OnPrem",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

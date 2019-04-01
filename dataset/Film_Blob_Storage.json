@@ -1,0 +1,29 @@
+{
+	"name": "Film_Blob_Storage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureBlob",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "",
+				"nullValue": "NO_DATA",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": false
+			},
+			"fileName": {
+				"value": "@concat('Film-',pipeline().RunId, '.txt')",
+				"type": "Expression"
+			},
+			"folderPath": "sm-onprem-to-cloud-source/film",
+			"modifiedDatetimeStart": "2019-04-01T19:00:00Z",
+			"modifiedDatetimeEnd": "2019-04-02T08:00:00Z"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
