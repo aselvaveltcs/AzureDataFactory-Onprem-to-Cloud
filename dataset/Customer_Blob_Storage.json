@@ -16,7 +16,10 @@
 				"skipLineCount": 0,
 				"firstRowAsHeader": false
 			},
-			"fileName": " @concat('Customer-',pipeline().RunId, '.txt')",
+			"fileName": {
+				"value": "@concat('Customer-',pipeline().RunId, '.txt')",
+				"type": "Expression"
+			},
 			"folderPath": "sm-onprem-to-cloud-source/customer"
 		}
 	},
