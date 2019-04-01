@@ -1,0 +1,13 @@
+{
+	"name": "Rental_OnPrem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OnPrem_MySQL_Linked_Service",
+			"type": "LinkedServiceReference"
+		},
+		"type": "RelationalTable",
+		"typeProperties": {
+			"tableName": "`rental`"
+		}
+	}
+}
