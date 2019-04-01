@@ -1,0 +1,52 @@
+{
+	"name": "Customer_OnPrem_Mysql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OnPrem_MySQL_Linked_Service",
+			"type": "LinkedServiceReference"
+		},
+		"type": "RelationalTable",
+		"structure": [
+			{
+				"name": "customer_id",
+				"type": "Int32"
+			},
+			{
+				"name": "store_id",
+				"type": "Byte"
+			},
+			{
+				"name": "first_name",
+				"type": "String"
+			},
+			{
+				"name": "last_name",
+				"type": "String"
+			},
+			{
+				"name": "email",
+				"type": "String"
+			},
+			{
+				"name": "address_id",
+				"type": "Int32"
+			},
+			{
+				"name": "active",
+				"type": "Int16"
+			},
+			{
+				"name": "create_date",
+				"type": "DateTime"
+			},
+			{
+				"name": "last_update",
+				"type": "DateTime"
+			}
+		],
+		"typeProperties": {
+			"tableName": "`customer`"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
