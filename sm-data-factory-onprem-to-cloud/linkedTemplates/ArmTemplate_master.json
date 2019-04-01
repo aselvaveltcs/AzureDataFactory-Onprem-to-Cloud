@@ -1,0 +1,70 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "sm-data-factory-onprem-to-cloud"
+		},
+		"AzureBlobStorage_LinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_LinkedService'"
+		},
+		"OnPrem_MySQL_Linked_Service_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
+		},
+		"Film_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Film-',pipeline().RunId, '.txt')"
+		},
+		"Film_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/film"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas Token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage_LinkedService_connectionString": {
+						"value": "[parameters('AzureBlobStorage_LinkedService_connectionString')]"
+					},
+					"OnPrem_MySQL_Linked_Service_connectionString": {
+						"value": "[parameters('OnPrem_MySQL_Linked_Service_connectionString')]"
+					},
+					"Film_Blob_Storage_properties_typeProperties_fileName": {
+						"value": "[parameters('Film_Blob_Storage_properties_typeProperties_fileName')]"
+					},
+					"Film_Blob_Storage_properties_typeProperties_folderPath": {
+						"value": "[parameters('Film_Blob_Storage_properties_typeProperties_folderPath')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

@@ -1,0 +1,246 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "sm-data-factory-onprem-to-cloud"
+		},
+		"AzureBlobStorage_LinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_LinkedService'"
+		},
+		"OnPrem_MySQL_Linked_Service_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
+		},
+		"Film_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Film-',pipeline().RunId, '.txt')"
+		},
+		"Film_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/film"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Data-Gateway-Connect-OnPrem')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage_LinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage_LinkedService_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "Data-Gateway-Connect-OnPrem",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/Data-Gateway-Connect-OnPrem')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OnPrem_MySQL_Linked_Service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MySql",
+				"typeProperties": {
+					"connectionString": "[parameters('OnPrem_MySQL_Linked_Service_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "Data-Gateway-Connect-OnPrem",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/Data-Gateway-Connect-OnPrem')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Film_Blob_Storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "NO_DATA",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": {
+						"value": "[parameters('Film_Blob_Storage_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": "[parameters('Film_Blob_Storage_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Film_OnPrem_MySql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OnPrem_MySQL_Linked_Service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RelationalTable",
+				"structure": [
+					{
+						"name": "film_id",
+						"type": "Int32"
+					},
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "description",
+						"type": "String"
+					},
+					{
+						"name": "release_year",
+						"type": "Int32"
+					},
+					{
+						"name": "language_id",
+						"type": "Byte"
+					},
+					{
+						"name": "original_language_id",
+						"type": "Byte"
+					},
+					{
+						"name": "rental_duration",
+						"type": "Byte"
+					},
+					{
+						"name": "rental_rate",
+						"type": "Decimal"
+					},
+					{
+						"name": "length",
+						"type": "Int32"
+					},
+					{
+						"name": "replacement_cost",
+						"type": "Decimal"
+					},
+					{
+						"name": "rating",
+						"type": "String"
+					},
+					{
+						"name": "special_features",
+						"type": "String"
+					},
+					{
+						"name": "last_update",
+						"type": "DateTime"
+					}
+				],
+				"typeProperties": {
+					"tableName": "`film`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MySQLToBlob')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy-Film-OnPremMySql-To-Azure",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `film`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Film_OnPrem_MySql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Film_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Film_OnPrem_MySql')]",
+				"[concat(variables('factoryId'), '/datasets/Film_Blob_Storage')]"
+			]
+		}
+	]
+}
