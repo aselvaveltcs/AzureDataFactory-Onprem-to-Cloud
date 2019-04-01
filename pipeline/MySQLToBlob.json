@@ -24,7 +24,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Film_OnPrem_MySql",
+						"referenceName": "Film_OnPrem",
 						"type": "DatasetReference"
 					}
 				],
@@ -57,13 +57,33 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Customer_OnPrem_Mysql",
+						"referenceName": "Customer_OnPrem",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "Customer_Blob_Storage",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Inventory_Table",
+				"type": "Copy",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Inventory_OnPrem",
 						"type": "DatasetReference"
 					}
 				]

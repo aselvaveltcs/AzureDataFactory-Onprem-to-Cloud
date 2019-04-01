@@ -1,5 +1,5 @@
 {
-	"name": "Film_OnPrem_MySql",
+	"name": "Film_OnPrem",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "OnPrem_MySQL_Linked_Service",

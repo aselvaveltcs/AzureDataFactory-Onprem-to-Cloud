@@ -1,0 +1,31 @@
+{
+	"name": "Inventory_OnPrem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OnPrem_MySQL_Linked_Service",
+			"type": "LinkedServiceReference"
+		},
+		"type": "RelationalTable",
+		"structure": [
+			{
+				"name": "inventory_id",
+				"type": "Int64"
+			},
+			{
+				"name": "film_id",
+				"type": "Int32"
+			},
+			{
+				"name": "store_id",
+				"type": "Byte"
+			},
+			{
+				"name": "last_update",
+				"type": "DateTime"
+			}
+		],
+		"typeProperties": {
+			"tableName": "`inventory`"
+		}
+	}
+}
