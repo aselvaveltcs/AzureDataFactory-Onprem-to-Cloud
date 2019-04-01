@@ -467,7 +467,7 @@
 						"type": "TextFormat",
 						"columnDelimiter": ",",
 						"rowDelimiter": "",
-						"nullValue": "NO_DATA",
+						"nullValue": "",
 						"treatEmptyAsNull": true,
 						"skipLineCount": 0,
 						"firstRowAsHeader": false
