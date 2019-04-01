@@ -112,11 +112,24 @@
 					"secureInput": false
 				},
 				"typeProperties": {
+					"source": {
+						"type": "RelationalSource",
+						"query": "select * from `rental`"
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "Rental_OnPrem",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Rental_Blob_Storage",
 						"type": "DatasetReference"
 					}
 				]
