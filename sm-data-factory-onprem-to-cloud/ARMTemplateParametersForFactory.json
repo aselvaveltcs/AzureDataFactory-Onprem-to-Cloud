@@ -22,6 +22,24 @@
 		},
 		"Film_Blob_Storage_properties_typeProperties_folderPath": {
 			"value": "sm-onprem-to-cloud-source/film"
+		},
+		"Inventory_Blob_Storage_properties_typeProperties_fileName": {
+			"value": "@concat('Inventory-',pipeline().RunId, '.txt')"
+		},
+		"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
+			"value": "sm-onprem-to-cloud-source/Inventory"
+		},
+		"Rental_Blob_Storage_properties_typeProperties_fileName": {
+			"value": "@concat('Rental-',pipeline().RunId, '.txt')"
+		},
+		"Rental_Blob_Storage_properties_typeProperties_folderPath": {
+			"value": "sm-onprem-to-cloud-source/rental"
+		},
+		"Address_Blob_Storage_properties_typeProperties_fileName": {
+			"value": "@concat('Address-',pipeline().RunId, '.txt')"
+		},
+		"Address_Blob_Storage_properties_typeProperties_folderPath": {
+			"value": "sm-onprem-to-cloud-source/address"
 		}
 	}
 }

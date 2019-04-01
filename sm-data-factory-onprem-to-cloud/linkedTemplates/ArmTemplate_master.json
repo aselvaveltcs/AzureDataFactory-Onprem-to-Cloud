@@ -31,6 +31,30 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/film"
 		},
+		"Inventory_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Inventory-',pipeline().RunId, '.txt')"
+		},
+		"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/Inventory"
+		},
+		"Rental_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Rental-',pipeline().RunId, '.txt')"
+		},
+		"Rental_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/rental"
+		},
+		"Address_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
+		},
+		"Address_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/address"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -75,6 +99,24 @@
 					},
 					"Film_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Film_Blob_Storage_properties_typeProperties_folderPath')]"
+					},
+					"Inventory_Blob_Storage_properties_typeProperties_fileName": {
+						"value": "[parameters('Inventory_Blob_Storage_properties_typeProperties_fileName')]"
+					},
+					"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
+						"value": "[parameters('Inventory_Blob_Storage_properties_typeProperties_folderPath')]"
+					},
+					"Rental_Blob_Storage_properties_typeProperties_fileName": {
+						"value": "[parameters('Rental_Blob_Storage_properties_typeProperties_fileName')]"
+					},
+					"Rental_Blob_Storage_properties_typeProperties_folderPath": {
+						"value": "[parameters('Rental_Blob_Storage_properties_typeProperties_folderPath')]"
+					},
+					"Address_Blob_Storage_properties_typeProperties_fileName": {
+						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]"
+					},
+					"Address_Blob_Storage_properties_typeProperties_folderPath": {
+						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_folderPath')]"
 					}
 				}
 			},

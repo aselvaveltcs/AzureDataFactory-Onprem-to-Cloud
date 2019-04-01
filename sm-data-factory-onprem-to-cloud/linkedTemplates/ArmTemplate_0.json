@@ -30,6 +30,30 @@
 		"Film_Blob_Storage_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/film"
+		},
+		"Inventory_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Inventory-',pipeline().RunId, '.txt')"
+		},
+		"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/Inventory"
+		},
+		"Rental_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Rental-',pipeline().RunId, '.txt')"
+		},
+		"Rental_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/rental"
+		},
+		"Address_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
+		},
+		"Address_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/address"
 		}
 	},
 	"variables": {
@@ -127,7 +151,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Customer_OnPrem_Mysql')]",
+			"name": "[concat(parameters('factoryName'), '/Customer_OnPrem')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -216,7 +240,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Film_OnPrem_MySql')]",
+			"name": "[concat(parameters('factoryName'), '/Film_OnPrem')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -289,6 +313,177 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Inventory_OnPrem')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OnPrem_MySQL_Linked_Service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RelationalTable",
+				"structure": [
+					{
+						"name": "inventory_id",
+						"type": "Int64"
+					},
+					{
+						"name": "film_id",
+						"type": "Int32"
+					},
+					{
+						"name": "store_id",
+						"type": "Byte"
+					},
+					{
+						"name": "last_update",
+						"type": "DateTime"
+					}
+				],
+				"typeProperties": {
+					"tableName": "`inventory`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Inventory_Blob_Storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "NO_DATA",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": {
+						"value": "[parameters('Inventory_Blob_Storage_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": "[parameters('Inventory_Blob_Storage_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Rental_OnPrem')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OnPrem_MySQL_Linked_Service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RelationalTable",
+				"typeProperties": {
+					"tableName": "`rental`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Rental_Blob_Storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "NO_DATA",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": {
+						"value": "[parameters('Rental_Blob_Storage_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": "[parameters('Rental_Blob_Storage_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Address_OnPrem')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OnPrem_MySQL_Linked_Service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RelationalTable",
+				"typeProperties": {
+					"tableName": "`address`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Address_Blob_Storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "NO_DATA",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": {
+						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": "[parameters('Address_Blob_Storage_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MySQLToBlob')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -318,7 +513,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "Film_OnPrem_MySql",
+								"referenceName": "Film_OnPrem",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -355,7 +550,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "Customer_OnPrem_Mysql",
+								"referenceName": "Customer_OnPrem",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -367,15 +562,132 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Inventory_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `inventory`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Inventory_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Inventory_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Rental_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `rental`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Rental_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Rental_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Address_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `address`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Address_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Address_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Film_OnPrem_MySql')]",
+				"[concat(variables('factoryId'), '/datasets/Film_OnPrem')]",
 				"[concat(variables('factoryId'), '/datasets/Film_Blob_Storage')]",
-				"[concat(variables('factoryId'), '/datasets/Customer_OnPrem_Mysql')]",
-				"[concat(variables('factoryId'), '/datasets/Customer_Blob_Storage')]"
+				"[concat(variables('factoryId'), '/datasets/Customer_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Customer_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Inventory_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Inventory_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Rental_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Rental_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Address_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]"
 			]
 		}
 	]
