@@ -47,8 +47,8 @@
 				},
 				"typeProperties": {
 					"source": {
-						"type": "BlobSource",
-						"recursive": true
+						"type": "RelationalSource",
+						"query": "select * from `customer`"
 					},
 					"sink": {
 						"type": "BlobSink"
@@ -57,7 +57,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Customer_Blob_Storage",
+						"referenceName": "Customer_OnPrem_Mysql",
 						"type": "DatasetReference"
 					}
 				],
