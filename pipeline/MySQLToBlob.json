@@ -145,11 +145,24 @@
 					"secureInput": false
 				},
 				"typeProperties": {
+					"source": {
+						"type": "RelationalSource",
+						"query": "select * from `address`"
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "Address_OnPrem",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Address_Blob_Storage",
 						"type": "DatasetReference"
 					}
 				]
