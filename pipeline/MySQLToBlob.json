@@ -79,11 +79,24 @@
 					"secureInput": false
 				},
 				"typeProperties": {
+					"source": {
+						"type": "RelationalSource",
+						"query": "select * from `inventory`"
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "Inventory_OnPrem",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Inventory_Blob_Storage",
 						"type": "DatasetReference"
 					}
 				]

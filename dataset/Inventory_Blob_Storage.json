@@ -1,0 +1,26 @@
+{
+	"name": "Inventory_Blob_Storage",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_LinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureBlob",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "",
+				"nullValue": "NO_DATA",
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": false
+			},
+			"fileName": {
+				"value": "@concat('Inventory-',pipeline().RunId, '.txt')",
+				"type": "Expression"
+			},
+			"folderPath": "sm-onprem-to-cloud-source/Inventory"
+		}
+	}
+}
