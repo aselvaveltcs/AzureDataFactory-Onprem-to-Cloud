@@ -159,12 +159,6 @@
 						"referenceName": "Address_OnPrem",
 						"type": "DatasetReference"
 					}
-				],
-				"outputs": [
-					{
-						"referenceName": "Address_Blob_Storage",
-						"type": "DatasetReference"
-					}
 				]
 			}
 		]

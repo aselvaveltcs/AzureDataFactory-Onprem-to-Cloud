@@ -6,6 +6,20 @@
 			"type": "LinkedServiceReference"
 		},
 		"type": "RelationalTable",
+		"structure": [
+			{
+				"name": "category_id",
+				"type": "Byte"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "last_update",
+				"type": "DateTime"
+			}
+		],
 		"typeProperties": {
 			"tableName": "`address`"
 		}
