@@ -467,7 +467,7 @@
 						"type": "TextFormat",
 						"columnDelimiter": ",",
 						"rowDelimiter": "",
-						"nullValue": "",
+						"nullValue": "NO_DATA",
 						"treatEmptyAsNull": true,
 						"skipLineCount": 0,
 						"firstRowAsHeader": false
@@ -652,7 +652,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "RelationalSource",
-								"query": "select * from `address`"
+								"query": "select address_id,address, address2 ,\ndistrict ,\ncity_id ,\npostal_code,\nphone\n from `address`"
 							},
 							"sink": {
 								"type": "BlobSink"
