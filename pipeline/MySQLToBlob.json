@@ -147,7 +147,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "RelationalSource",
-						"query": "select * from `address`"
+						"query": "select address_id,address, address2 ,\ndistrict ,\ncity_id ,\npostal_code,\nphone\n from `address`"
 					},
 					"sink": {
 						"type": "BlobSink"
@@ -157,6 +157,12 @@
 				"inputs": [
 					{
 						"referenceName": "Address_OnPrem",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Address_Blob_Storage",
 						"type": "DatasetReference"
 					}
 				]
