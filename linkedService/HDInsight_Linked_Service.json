@@ -16,8 +16,14 @@
 			"clusterNamePrefix": "hdi-adf-cluster-",
 			"clusterUserName": "suvendu",
 			"clusterSshUserName": "sshuser",
+			"additionalLinkedServiceNames": [
+				{
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				}
+			],
 			"linkedServiceName": {
-				"referenceName": "AzureBlobStorage_LinkedService",
+				"referenceName": "AzureBlob_HDInsight_LinkedService",
 				"type": "LinkedServiceReference"
 			},
 			"headNodeSize": "",
@@ -25,7 +31,7 @@
 			"zookeeperNodeSize": "",
 			"subnetName": "",
 			"virtualNetworkId": "",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNNLURBVEEtRkFDVE9SWS1PTlBSRU0tVE8tQ0xPVURfNWMxYTk5NjEtMzExZC00MjFiLTgyZWMtMDNhNDA0MGZkOTZjIg0KfQ=="
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNNLURBVEEtRkFDVE9SWS1PTlBSRU0tVE8tQ0xPVURfY2ZiZGQ0MGMtMmZjZS00ZThkLTljZTgtYmZjZDA1OTgxMWEzIg0KfQ=="
 		}
 	}
 }
