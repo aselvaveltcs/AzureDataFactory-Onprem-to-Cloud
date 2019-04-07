@@ -1,3 +1,21 @@
 {
-	"name": "Data_Transfrm_Pig"
+	"name": "Data_Transfrm_Pig",
+	"properties": {
+		"activities": [
+			{
+				"name": "Pig_Cleaning_Transfrm",
+				"type": "HDInsightPig",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"scriptPath": ""
+				}
+			}
+		]
+	}
 }
