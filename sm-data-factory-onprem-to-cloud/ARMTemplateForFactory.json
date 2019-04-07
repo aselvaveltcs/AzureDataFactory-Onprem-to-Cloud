@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
 		},
+		"AzureBlob_HDInsight_LinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlob_HDInsight_LinkedService'"
+		},
 		"Address_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
@@ -97,7 +101,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/MySQLToBlob')]",
+			"name": "[concat(parameters('factoryName'), '/MySQLToBlobToHDInsight')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -288,7 +292,7 @@
 						]
 					},
 					{
-						"name": "Pig1",
+						"name": "Pig_Data_Transfrm",
 						"type": "HDInsightPig",
 						"dependsOn": [
 							{
@@ -333,16 +337,16 @@
 						"typeProperties": {
 							"scriptPath": "sm-scripts/pig-scripts/data-factory-pig-script.pig",
 							"defines": {
-								"InputCustomer": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/customer/",
-								"InputFilm": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/film/",
-								"InputInventory": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/Inventory/",
-								"InputRental": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/rental/",
-								"InputAddress": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/address/",
-								"OutputCustomer": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
-								"OutputFilm": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
-								"OutputInventory": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
-								"OutputRental": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
-								"OutputAddress": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/"
+								"InputCustomer": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/customer/",
+								"InputFilm": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/film/",
+								"InputInventory": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/Inventory/",
+								"InputRental": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/rental/",
+								"InputAddress": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/address/",
+								"OutputCustomer": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
+								"OutputFilm": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
+								"OutputInventory": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
+								"OutputRental": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
+								"OutputAddress": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/"
 							},
 							"scriptLinkedService": {
 								"referenceName": "AzureBlobStorage_LinkedService",
@@ -782,8 +786,14 @@
 						"type": "SecureString",
 						"value": "[parameters('HDInsight_Linked_Service_servicePrincipalKey')]"
 					},
+					"additionalLinkedServiceNames": [
+						{
+							"referenceName": "AzureBlobStorage_LinkedService",
+							"type": "LinkedServiceReference"
+						}
+					],
 					"linkedServiceName": {
-						"referenceName": "AzureBlobStorage_LinkedService",
+						"referenceName": "AzureBlob_HDInsight_LinkedService",
 						"type": "LinkedServiceReference"
 					},
 					"headNodeSize": "",
@@ -794,7 +804,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlob_HDInsight_LinkedService')]"
 			]
 		},
 		{
@@ -826,7 +837,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "MySQLToBlob",
+							"referenceName": "MySQLToBlobToHDInsight",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -844,7 +855,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/MySQLToBlob')]"
+				"[concat(variables('factoryId'), '/pipelines/MySQLToBlobToHDInsight')]"
 			]
 		},
 		{
@@ -854,6 +865,19 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlob_HDInsight_LinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlob_HDInsight_LinkedService_connectionString')]"
+				}
 			},
 			"dependsOn": []
 		}

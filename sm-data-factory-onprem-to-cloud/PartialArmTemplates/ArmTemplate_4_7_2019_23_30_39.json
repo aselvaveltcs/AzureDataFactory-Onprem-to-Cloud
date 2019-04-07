@@ -1,0 +1,285 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "sm-data-factory-onprem-to-cloud"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/MySQLToBlobToHDInsight')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Film_Table",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `film`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Film_OnPrem",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Film_Blob_Storage",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Customer_Table",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `customer`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Customer_OnPrem",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Customer_Blob_Storage",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Inventory_Table",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `inventory`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Inventory_OnPrem",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Inventory_Blob_Storage",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Rental_Table",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `rental`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Rental_OnPrem",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Rental_Blob_Storage",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Address_Table",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select address_id,address, address2 ,\ndistrict ,\ncity_id ,\npostal_code,\nphone\n from `address`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Address_OnPrem",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Address_Blob_Storage",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Pig_Data_Transfrm",
+						"type": "HDInsightPig",
+						"dependsOn": [
+							{
+								"activity": "Film_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Customer_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Inventory_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Rental_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Address_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"scriptPath": "sm-scripts/pig-scripts/data-factory-pig-script.pig",
+							"defines": {
+								"InputCustomer": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/customer/",
+								"InputFilm": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/film/",
+								"InputInventory": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/Inventory/",
+								"InputRental": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/rental/",
+								"InputAddress": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/address/",
+								"OutputCustomer": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
+								"OutputFilm": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
+								"OutputInventory": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
+								"OutputRental": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
+								"OutputAddress": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/"
+							},
+							"scriptLinkedService": {
+								"referenceName": "AzureBlobStorage_LinkedService",
+								"type": "LinkedServiceReference"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "HDInsight_Linked_Service",
+							"type": "LinkedServiceReference"
+						}
+					}
+				]
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger-On-Prem-to-Cloud-Every-Hour')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "MySQLToBlobToHDInsight",
+							"type": "PipelineReference"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 1,
+						"startTime": "2019-04-07T11:39:00.000Z",
+						"endTime": "2019-04-09T23:39:00.000Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/MySQLToBlobToHDInsight')]"
+			]
+		}
+	]
+}

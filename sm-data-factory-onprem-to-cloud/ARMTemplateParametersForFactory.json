@@ -20,6 +20,9 @@
 		"OnPrem_MySQL_Linked_Service_connectionString": {
 			"value": ""
 		},
+		"AzureBlob_HDInsight_LinkedService_connectionString": {
+			"value": ""
+		},
 		"Address_Blob_Storage_properties_typeProperties_fileName": {
 			"value": "@concat('Address-',pipeline().RunId, '.txt')"
 		},

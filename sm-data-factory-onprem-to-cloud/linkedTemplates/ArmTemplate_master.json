@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
 		},
+		"AzureBlob_HDInsight_LinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlob_HDInsight_LinkedService'"
+		},
 		"Address_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
@@ -120,6 +124,9 @@
 					},
 					"AzureBlobStorage_LinkedService_connectionString": {
 						"value": "[parameters('AzureBlobStorage_LinkedService_connectionString')]"
+					},
+					"AzureBlob_HDInsight_LinkedService_connectionString": {
+						"value": "[parameters('AzureBlob_HDInsight_LinkedService_connectionString')]"
 					},
 					"HDInsight_Linked_Service_clusterPassword": {
 						"value": "[parameters('HDInsight_Linked_Service_clusterPassword')]"
