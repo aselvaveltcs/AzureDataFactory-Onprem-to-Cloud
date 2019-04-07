@@ -1,0 +1,35 @@
+{
+	"name": "HDInsight_Linked_Service",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "HDInsightOnDemand",
+		"typeProperties": {
+			"clusterType": "hadoop",
+			"clusterSize": 4,
+			"timeToLive": "00:05:00",
+			"version": "3.6",
+			"hostSubscriptionId": "a001c005-dea7-42da-9342-bc1c11fc44aa",
+			"clusterResourceGroup": "sm-onprem-to-cloud",
+			"servicePrincipalId": "b95c7d38-884f-4598-bd9e-ceb03200d855",
+			"osType": "Linux",
+			"tenant": "404b1967-6507-45ab-8a6d-7374a3f478be",
+			"clusterNamePrefix": "hdi-adf-cluster-",
+			"clusterUserName": "suvendu",
+			"clusterSshUserName": "sshuser",
+			"linkedServiceName": {
+				"referenceName": "AzureBlobStorage_LinkedService",
+				"type": "LinkedServiceReference"
+			},
+			"headNodeSize": "",
+			"dataNodeSize": "",
+			"zookeeperNodeSize": "",
+			"subnetName": "",
+			"virtualNetworkId": "",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI0MmM5ZjU5Ny05MDQxLTRmMGItODYzZi05ZjMyYmFhMTExNmUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "On-Prem-Data-Gateway",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
