@@ -15,6 +15,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
 		},
+		"HDInsight_Linked_Service_clusterPassword": {
+			"type": "secureString",
+			"metadata": "Secure string for 'clusterPassword' of 'HDInsight_Linked_Service'"
+		},
+		"HDInsight_Linked_Service_clusterSshPassword": {
+			"type": "secureString",
+			"metadata": "Secure string for 'clusterSshPassword' of 'HDInsight_Linked_Service'"
+		},
+		"HDInsight_Linked_Service_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'HDInsight_Linked_Service'"
+		},
 		"Address_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
@@ -54,6 +66,30 @@
 		"Rental_Blob_Storage_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/rental"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId": {
+			"type": "string",
+			"defaultValue": "a001c005-dea7-42da-9342-bc1c11fc44aa"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterResourceGroup": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "b95c7d38-884f-4598-bd9e-ceb03200d855"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "404b1967-6507-45ab-8a6d-7374a3f478be"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterUserName": {
+			"type": "string",
+			"defaultValue": "suvendu"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
+			"type": "string",
+			"defaultValue": "sshuser"
 		}
 	},
 	"variables": {
@@ -491,6 +527,108 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HDInsight_Linked_Service')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HDInsightOnDemand",
+				"typeProperties": {
+					"clusterType": "hadoop",
+					"clusterSize": 4,
+					"timeToLive": "00:05:00",
+					"version": "3.6",
+					"hostSubscriptionId": "[parameters('HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId')]",
+					"clusterResourceGroup": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterResourceGroup')]",
+					"servicePrincipalId": "[parameters('HDInsight_Linked_Service_properties_typeProperties_servicePrincipalId')]",
+					"osType": "Linux",
+					"tenant": "[parameters('HDInsight_Linked_Service_properties_typeProperties_tenant')]",
+					"clusterNamePrefix": "hdi-adf-cluster-",
+					"clusterUserName": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterUserName')]",
+					"clusterPassword": {
+						"type": "SecureString",
+						"value": "[parameters('HDInsight_Linked_Service_clusterPassword')]"
+					},
+					"clusterSshUserName": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName')]",
+					"clusterSshPassword": {
+						"type": "SecureString",
+						"value": "[parameters('HDInsight_Linked_Service_clusterSshPassword')]"
+					},
+					"servicePrincipalKey": {
+						"type": "SecureString",
+						"value": "[parameters('HDInsight_Linked_Service_servicePrincipalKey')]"
+					},
+					"linkedServiceName": {
+						"referenceName": "AzureBlobStorage_LinkedService",
+						"type": "LinkedServiceReference"
+					},
+					"headNodeSize": "",
+					"dataNodeSize": "",
+					"zookeeperNodeSize": "",
+					"subnetName": "",
+					"virtualNetworkId": ""
+				},
+				"connectVia": {
+					"referenceName": "On-Prem-Data-Gateway",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/On-Prem-Data-Gateway')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Data_Transformation')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Pig_Cleaning_Transfrm",
+						"type": "HDInsightPig",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"scriptPath": "sm-scripts/pig-scripts/data-factory-pig-script.pig",
+							"defines": {
+								"InputCustomer": "wasb://sm1storageaccount1.blob.core.windows.net/sm-onprem-to-cloud-source/customer/",
+								"InputFilm": "wasb://sm1storageaccount1.blob.core.windows.net/sm-onprem-to-cloud-source/film/",
+								"InputInventory": "wasb://sm1storageaccount1.blob.core.windows.net/sm-onprem-to-cloud-source/Inventory/",
+								"InputRental": "wasb://sm1storageaccount1.blob.core.windows.net/sm-onprem-to-cloud-source/rental/",
+								"InputAddress": "wasb://sm1storageaccount1.blob.core.windows.net/sm-onprem-to-cloud-source/address/",
+								"OutputCustomer": "wasb://sm1storageaccount1.blob.core.windows.net/sm-pig-output/customer/",
+								"OutputFilm": "wasb://sm1storageaccount1.blob.core.windows.net/sm-pig-output/film/",
+								"OutputInventory": "wasb://sm1storageaccount1.blob.core.windows.net/sm-pig-output/inventory/",
+								"OutputRental": "wasb://sm1storageaccount1.blob.core.windows.net/sm-pig-output/rental/",
+								"OutputAddress": "wasb://sm1storageaccount1.blob.core.windows.net/sm-pig-output/address/"
+							},
+							"scriptLinkedService": {
+								"referenceName": "AzureBlobStorage_LinkedService",
+								"type": "LinkedServiceReference"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "HDInsight_Linked_Service",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
+				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]"
 			]
 		},
 		{

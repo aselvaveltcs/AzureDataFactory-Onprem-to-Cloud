@@ -8,6 +8,15 @@
 		"AzureBlobStorage_LinkedService_connectionString": {
 			"value": ""
 		},
+		"HDInsight_Linked_Service_clusterPassword": {
+			"value": ""
+		},
+		"HDInsight_Linked_Service_clusterSshPassword": {
+			"value": ""
+		},
+		"HDInsight_Linked_Service_servicePrincipalKey": {
+			"value": ""
+		},
 		"OnPrem_MySQL_Linked_Service_connectionString": {
 			"value": ""
 		},
@@ -40,6 +49,24 @@
 		},
 		"Rental_Blob_Storage_properties_typeProperties_folderPath": {
 			"value": "sm-onprem-to-cloud-source/rental"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId": {
+			"value": "a001c005-dea7-42da-9342-bc1c11fc44aa"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterResourceGroup": {
+			"value": "sm-onprem-to-cloud"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_servicePrincipalId": {
+			"value": "b95c7d38-884f-4598-bd9e-ceb03200d855"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_tenant": {
+			"value": "404b1967-6507-45ab-8a6d-7374a3f478be"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterUserName": {
+			"value": "suvendu"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
+			"value": "sshuser"
 		},
 		"containerUri": {
 			"value": ""

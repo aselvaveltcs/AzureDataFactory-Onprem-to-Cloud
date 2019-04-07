@@ -11,6 +11,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_LinkedService'"
 		},
+		"HDInsight_Linked_Service_clusterPassword": {
+			"type": "secureString",
+			"metadata": "Secure string for 'clusterPassword' of 'HDInsight_Linked_Service'"
+		},
+		"HDInsight_Linked_Service_clusterSshPassword": {
+			"type": "secureString",
+			"metadata": "Secure string for 'clusterSshPassword' of 'HDInsight_Linked_Service'"
+		},
+		"HDInsight_Linked_Service_servicePrincipalKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalKey' of 'HDInsight_Linked_Service'"
+		},
 		"OnPrem_MySQL_Linked_Service_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
@@ -55,6 +67,30 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/rental"
 		},
+		"HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId": {
+			"type": "string",
+			"defaultValue": "a001c005-dea7-42da-9342-bc1c11fc44aa"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterResourceGroup": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "b95c7d38-884f-4598-bd9e-ceb03200d855"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "404b1967-6507-45ab-8a6d-7374a3f478be"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterUserName": {
+			"type": "string",
+			"defaultValue": "suvendu"
+		},
+		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
+			"type": "string",
+			"defaultValue": "sshuser"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -88,6 +124,15 @@
 					"OnPrem_MySQL_Linked_Service_connectionString": {
 						"value": "[parameters('OnPrem_MySQL_Linked_Service_connectionString')]"
 					},
+					"HDInsight_Linked_Service_clusterPassword": {
+						"value": "[parameters('HDInsight_Linked_Service_clusterPassword')]"
+					},
+					"HDInsight_Linked_Service_clusterSshPassword": {
+						"value": "[parameters('HDInsight_Linked_Service_clusterSshPassword')]"
+					},
+					"HDInsight_Linked_Service_servicePrincipalKey": {
+						"value": "[parameters('HDInsight_Linked_Service_servicePrincipalKey')]"
+					},
 					"Address_Blob_Storage_properties_typeProperties_fileName": {
 						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]"
 					},
@@ -117,6 +162,24 @@
 					},
 					"Rental_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Rental_Blob_Storage_properties_typeProperties_folderPath')]"
+					},
+					"HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId": {
+						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId')]"
+					},
+					"HDInsight_Linked_Service_properties_typeProperties_clusterResourceGroup": {
+						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterResourceGroup')]"
+					},
+					"HDInsight_Linked_Service_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_servicePrincipalId')]"
+					},
+					"HDInsight_Linked_Service_properties_typeProperties_tenant": {
+						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_tenant')]"
+					},
+					"HDInsight_Linked_Service_properties_typeProperties_clusterUserName": {
+						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterUserName')]"
+					},
+					"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
+						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName')]"
 					}
 				}
 			},
