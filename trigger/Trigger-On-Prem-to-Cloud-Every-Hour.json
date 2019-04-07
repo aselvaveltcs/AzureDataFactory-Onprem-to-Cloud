@@ -1,7 +1,7 @@
 {
 	"name": "Trigger-On-Prem-to-Cloud-Every-Hour",
 	"properties": {
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
