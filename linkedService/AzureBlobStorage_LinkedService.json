@@ -5,10 +5,10 @@
 		"type": "AzureBlobStorage",
 		"typeProperties": {
 			"connectionString": "DefaultEndpointsProtocol=https;AccountName=sm1storageaccount1;EndpointSuffix=core.windows.net;",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3ZWZlMDMzZC00ZTc1LTQ0MjItYTFhNS0zZWVkZGJiMDVlOWUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3NzkwYzRhZS04NGMyLTQyYTEtYjAyNC04YzA2MGJlNjEwOGYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
-			"referenceName": "Data-Gateway-Connect-OnPrem",
+			"referenceName": "On-Prem-Data-Gateway",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
