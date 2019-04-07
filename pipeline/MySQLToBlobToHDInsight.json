@@ -212,16 +212,16 @@
 				"typeProperties": {
 					"scriptPath": "sm-scripts/pig-scripts/data-factory-pig-script.pig",
 					"defines": {
-						"InputCustomer": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/customer/",
-						"InputFilm": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/film/",
-						"InputInventory": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/Inventory/",
-						"InputRental": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/rental/",
-						"InputAddress": "wasb://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/address/",
-						"OutputCustomer": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
-						"OutputFilm": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
-						"OutputInventory": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
-						"OutputRental": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
-						"OutputAddress": "wasb://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/"
+						"InputCustomer": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/customer/",
+						"InputFilm": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/film/",
+						"InputInventory": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/Inventory/",
+						"InputRental": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/rental/",
+						"InputAddress": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/address/",
+						"OutputCustomer": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
+						"OutputFilm": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
+						"OutputInventory": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
+						"OutputRental": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
+						"OutputAddress": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/"
 					},
 					"scriptLinkedService": {
 						"referenceName": "AzureBlobStorage_LinkedService",

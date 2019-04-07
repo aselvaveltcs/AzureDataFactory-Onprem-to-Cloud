@@ -5,7 +5,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "MySQLToBlob",
+					"referenceName": "MySQLToBlobToHDInsight",
 					"type": "PipelineReference"
 				}
 			}
