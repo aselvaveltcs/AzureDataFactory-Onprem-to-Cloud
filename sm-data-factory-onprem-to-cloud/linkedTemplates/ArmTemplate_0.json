@@ -869,11 +869,12 @@
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
-						"frequency": "Hour",
+						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2019-04-07T11:39:00.000Z",
 						"endTime": "2019-04-09T23:39:00.000Z",
-						"timeZone": "UTC"
+						"timeZone": "UTC",
+						"schedule": {}
 					}
 				}
 			},
