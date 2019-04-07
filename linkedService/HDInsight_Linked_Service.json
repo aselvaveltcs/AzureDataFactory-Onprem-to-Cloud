@@ -25,11 +25,7 @@
 			"zookeeperNodeSize": "",
 			"subnetName": "",
 			"virtualNetworkId": "",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJkNWQ1ODIzZS01OWZlLTQ2YWQtYTllNC0yYjI5ODdlYjc2ODQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
-		},
-		"connectVia": {
-			"referenceName": "On-Prem-Data-Gateway",
-			"type": "IntegrationRuntimeReference"
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNNLURBVEEtRkFDVE9SWS1PTlBSRU0tVE8tQ0xPVURfNTk3YmE3NTktMGJkNC00ZDdjLThiNjMtODM2Nzg4YTY3NmVmIg0KfQ=="
 		}
 	}
 }
