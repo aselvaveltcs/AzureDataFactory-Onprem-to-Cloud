@@ -2,6 +2,14 @@
 	"name": "Trigger-On-Prem-to-Cloud-Every-Hour",
 	"properties": {
 		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MySQLToBlob",
+					"type": "PipelineReference"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
