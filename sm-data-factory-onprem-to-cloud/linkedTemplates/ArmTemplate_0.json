@@ -15,6 +15,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
 		},
+		"Address_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
+		},
+		"Address_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/address"
+		},
 		"Customer_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Customer-',pipeline().RunId, '.txt')"
@@ -46,14 +54,6 @@
 		"Rental_Blob_Storage_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/rental"
-		},
-		"Address_Blob_Storage_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
-		},
-		"Address_Blob_Storage_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "sm-onprem-to-cloud-source/address"
 		}
 	},
 	"variables": {
@@ -62,6 +62,16 @@
 	"resources": [
 		{
 			"name": "[concat(parameters('factoryName'), '/Data-Gateway-Connect-OnPrem')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/On-Prem-Data-Gateway')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -91,12 +101,12 @@
 					"connectionString": "[parameters('AzureBlobStorage_LinkedService_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "Data-Gateway-Connect-OnPrem",
+					"referenceName": "On-Prem-Data-Gateway",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/Data-Gateway-Connect-OnPrem')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/On-Prem-Data-Gateway')]"
 			]
 		},
 		{
@@ -110,12 +120,63 @@
 					"connectionString": "[parameters('OnPrem_MySQL_Linked_Service_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "Data-Gateway-Connect-OnPrem",
+					"referenceName": "On-Prem-Data-Gateway",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/Data-Gateway-Connect-OnPrem')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/On-Prem-Data-Gateway')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Address_Blob_Storage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "NO_DATA",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": {
+						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": "[parameters('Address_Blob_Storage_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Address_OnPrem')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OnPrem_MySQL_Linked_Service",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RelationalTable",
+				"typeProperties": {
+					"tableName": "`address`"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
 			]
 		},
 		{
@@ -313,43 +374,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Inventory_OnPrem')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "OnPrem_MySQL_Linked_Service",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "RelationalTable",
-				"structure": [
-					{
-						"name": "inventory_id",
-						"type": "Int64"
-					},
-					{
-						"name": "film_id",
-						"type": "Int32"
-					},
-					{
-						"name": "store_id",
-						"type": "Byte"
-					},
-					{
-						"name": "last_update",
-						"type": "DateTime"
-					}
-				],
-				"typeProperties": {
-					"tableName": "`inventory`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Inventory_Blob_Storage')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -382,7 +406,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Rental_OnPrem')]",
+			"name": "[concat(parameters('factoryName'), '/Inventory_OnPrem')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -392,8 +416,26 @@
 				},
 				"annotations": [],
 				"type": "RelationalTable",
+				"structure": [
+					{
+						"name": "inventory_id",
+						"type": "Int64"
+					},
+					{
+						"name": "film_id",
+						"type": "Int32"
+					},
+					{
+						"name": "store_id",
+						"type": "Byte"
+					},
+					{
+						"name": "last_update",
+						"type": "DateTime"
+					}
+				],
 				"typeProperties": {
-					"tableName": "`rental`"
+					"tableName": "`inventory`"
 				}
 			},
 			"dependsOn": [
@@ -433,7 +475,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Address_OnPrem')]",
+			"name": "[concat(parameters('factoryName'), '/Rental_OnPrem')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -444,43 +486,11 @@
 				"annotations": [],
 				"type": "RelationalTable",
 				"typeProperties": {
-					"tableName": "`address`"
+					"tableName": "`rental`"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Address_Blob_Storage')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage_LinkedService",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureBlob",
-				"typeProperties": {
-					"format": {
-						"type": "TextFormat",
-						"columnDelimiter": ",",
-						"rowDelimiter": "",
-						"nullValue": "NO_DATA",
-						"treatEmptyAsNull": true,
-						"skipLineCount": 0,
-						"firstRowAsHeader": false
-					},
-					"fileName": {
-						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]",
-						"type": "Expression"
-					},
-					"folderPath": "[parameters('Address_Blob_Storage_properties_typeProperties_folderPath')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
 			]
 		},
 		{

@@ -15,6 +15,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
 		},
+		"Address_Blob_Storage_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
+		},
+		"Address_Blob_Storage_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-onprem-to-cloud-source/address"
+		},
 		"Customer_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Customer-',pipeline().RunId, '.txt')"
@@ -46,14 +54,6 @@
 		"Rental_Blob_Storage_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/rental"
-		},
-		"Address_Blob_Storage_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "@concat('Address-',pipeline().RunId, '.txt')"
-		},
-		"Address_Blob_Storage_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "sm-onprem-to-cloud-source/address"
 		},
 		"containerUri": {
 			"type": "string",
@@ -88,6 +88,12 @@
 					"OnPrem_MySQL_Linked_Service_connectionString": {
 						"value": "[parameters('OnPrem_MySQL_Linked_Service_connectionString')]"
 					},
+					"Address_Blob_Storage_properties_typeProperties_fileName": {
+						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]"
+					},
+					"Address_Blob_Storage_properties_typeProperties_folderPath": {
+						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_folderPath')]"
+					},
 					"Customer_Blob_Storage_properties_typeProperties_fileName": {
 						"value": "[parameters('Customer_Blob_Storage_properties_typeProperties_fileName')]"
 					},
@@ -111,12 +117,6 @@
 					},
 					"Rental_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Rental_Blob_Storage_properties_typeProperties_folderPath')]"
-					},
-					"Address_Blob_Storage_properties_typeProperties_fileName": {
-						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]"
-					},
-					"Address_Blob_Storage_properties_typeProperties_folderPath": {
-						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_folderPath')]"
 					}
 				}
 			},
