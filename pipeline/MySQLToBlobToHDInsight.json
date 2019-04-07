@@ -1,5 +1,5 @@
 {
-	"name": "MySQLToBlob",
+	"name": "MySQLToBlobToHDInsight",
 	"properties": {
 		"activities": [
 			{
