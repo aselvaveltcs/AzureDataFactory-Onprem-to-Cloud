@@ -699,6 +699,37 @@
 				"[concat(variables('factoryId'), '/datasets/Address_OnPrem')]",
 				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Trigger-On-Prem-to-Cloud-Every-Hour')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "MySQLToBlob",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 1,
+						"startTime": "2019-04-07T11:39:00.000Z",
+						"endTime": "2019-04-09T23:39:00.000Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/MySQLToBlob')]"
+			]
 		}
 	]
 }
