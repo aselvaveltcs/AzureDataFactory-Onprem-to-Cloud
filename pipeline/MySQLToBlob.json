@@ -166,6 +166,60 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Pig1",
+				"type": "HDInsightPig",
+				"dependsOn": [
+					{
+						"activity": "Film_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Customer_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Inventory_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Rental_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Address_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"scriptPath": "sm-scripts/pig-scripts/data-factory-pig-script.pig",
+					"scriptLinkedService": {
+						"referenceName": "AzureBlobStorage_LinkedService",
+						"type": "LinkedServiceReference"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "HDInsight_Linked_Service",
+					"type": "LinkedServiceReference"
+				}
 			}
 		]
 	},
