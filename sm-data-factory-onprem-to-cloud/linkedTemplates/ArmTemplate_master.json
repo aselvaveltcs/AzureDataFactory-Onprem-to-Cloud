@@ -121,9 +121,6 @@
 					"AzureBlobStorage_LinkedService_connectionString": {
 						"value": "[parameters('AzureBlobStorage_LinkedService_connectionString')]"
 					},
-					"OnPrem_MySQL_Linked_Service_connectionString": {
-						"value": "[parameters('OnPrem_MySQL_Linked_Service_connectionString')]"
-					},
 					"HDInsight_Linked_Service_clusterPassword": {
 						"value": "[parameters('HDInsight_Linked_Service_clusterPassword')]"
 					},
@@ -132,6 +129,9 @@
 					},
 					"HDInsight_Linked_Service_servicePrincipalKey": {
 						"value": "[parameters('HDInsight_Linked_Service_servicePrincipalKey')]"
+					},
+					"OnPrem_MySQL_Linked_Service_connectionString": {
+						"value": "[parameters('OnPrem_MySQL_Linked_Service_connectionString')]"
 					},
 					"Address_Blob_Storage_properties_typeProperties_fileName": {
 						"value": "[parameters('Address_Blob_Storage_properties_typeProperties_fileName')]"
