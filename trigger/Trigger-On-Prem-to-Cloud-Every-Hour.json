@@ -1,5 +1,5 @@
 {
-	"name": "On-Prem-to-Cloud-Every-Hour",
+	"name": "Trigger-On-Prem-to-Cloud-Every-Hour",
 	"properties": {
 		"runtimeState": "Started",
 		"type": "ScheduleTrigger",
