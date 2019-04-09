@@ -1,7 +1,6 @@
 {
 	"name": "MySQLToBlobToHDInsight",
 	"properties": {
-		"description": "It will delete all pig output folders from Blob storage",
 		"activities": [
 			{
 				"name": "Film_Table",
@@ -236,6 +235,7 @@
 			},
 			{
 				"name": "PigOutputFolders",
+				"description": "It will delete all pig output folders from Blob storage",
 				"type": "Delete",
 				"dependsOn": [
 					{
