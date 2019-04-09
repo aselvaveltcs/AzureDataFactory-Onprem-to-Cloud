@@ -232,6 +232,24 @@
 					"referenceName": "HDInsight_Linked_Service",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DeletePigOutputFolders",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false
+				}
 			}
 		]
 	},
