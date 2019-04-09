@@ -271,6 +271,14 @@
 			{
 				"name": "Overdue_Dvds_Hive",
 				"type": "HDInsightHive",
+				"dependsOn": [
+					{
+						"activity": "HiveOutputFolders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -302,6 +310,14 @@
 				"name": "HiveOutputFolders",
 				"description": "It will delete all hive output folders from Blob storage",
 				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Pig_Data_Transfrm",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
