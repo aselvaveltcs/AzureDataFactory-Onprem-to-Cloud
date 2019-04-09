@@ -248,7 +248,15 @@
 						"referenceName": "DeletePigOutputFolders",
 						"type": "DatasetReference"
 					},
-					"enableLogging": false
+					"recursive": true,
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "AzureBlobStorage_LinkedService",
+							"type": "LinkedServiceReference"
+						},
+						"path": "delete-logs"
+					},
+					"enableLogging": true
 				}
 			}
 		]
