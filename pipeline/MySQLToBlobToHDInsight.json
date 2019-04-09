@@ -200,6 +200,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "PigOutputFolders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -234,8 +240,16 @@
 				}
 			},
 			{
-				"name": "Delete1",
+				"name": "PigOutputFolders",
 				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Inventory_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
