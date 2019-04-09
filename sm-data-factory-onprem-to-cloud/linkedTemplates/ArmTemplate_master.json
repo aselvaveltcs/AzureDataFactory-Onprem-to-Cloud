@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_LinkedService'"
 		},
+		"AzureBlob_HDInsight_LinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlob_HDInsight_LinkedService'"
+		},
 		"HDInsight_Linked_Service_clusterPassword": {
 			"type": "secureString",
 			"metadata": "Secure string for 'clusterPassword' of 'HDInsight_Linked_Service'"
@@ -26,10 +30,6 @@
 		"OnPrem_MySQL_Linked_Service_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'OnPrem_MySQL_Linked_Service'"
-		},
-		"AzureBlob_HDInsight_LinkedService_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlob_HDInsight_LinkedService'"
 		},
 		"Address_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
@@ -94,6 +94,10 @@
 		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 			"type": "string",
 			"defaultValue": "sshuser"
+		},
+		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-pig-output"
 		},
 		"containerUri": {
 			"type": "string",
@@ -187,6 +191,9 @@
 					},
 					"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName')]"
+					},
+					"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+						"value": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
 					}
 				}
 			},

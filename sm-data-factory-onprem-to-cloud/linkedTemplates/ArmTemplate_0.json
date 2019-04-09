@@ -94,6 +94,10 @@
 		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 			"type": "string",
 			"defaultValue": "sshuser"
+		},
+		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-pig-output"
 		}
 	},
 	"variables": {
@@ -114,16 +118,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/On-Prem-Data-Gateway')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlob_HDInsight_LinkedService')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -133,6 +127,16 @@
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlob_HDInsight_LinkedService_connectionString')]"
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/On-Prem-Data-Gateway')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
@@ -367,6 +371,34 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/On-Prem-Data-Gateway')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DeletePigOutputFolders')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"folderPath": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
 			]
 		},
 		{
@@ -798,6 +830,12 @@
 								"dependencyConditions": [
 									"Succeeded"
 								]
+							},
+							{
+								"activity": "PigOutputFolders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
 						],
 						"policy": {
@@ -831,6 +869,42 @@
 							"referenceName": "HDInsight_Linked_Service",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "PigOutputFolders",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Inventory_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DeletePigOutputFolders",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"recursive": true,
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzureBlobStorage_LinkedService",
+									"type": "LinkedServiceReference"
+								},
+								"path": "delete-logs"
+							},
+							"enableLogging": true
+						}
 					}
 				],
 				"annotations": []
@@ -847,7 +921,8 @@
 				"[concat(variables('factoryId'), '/datasets/Address_OnPrem')]",
 				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
-				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]"
+				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
+				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]"
 			]
 		},
 		{
@@ -873,8 +948,7 @@
 						"interval": 1,
 						"startTime": "2019-04-07T11:39:00.000Z",
 						"endTime": "2019-04-09T23:39:00.000Z",
-						"timeZone": "UTC",
-						"schedule": {}
+						"timeZone": "UTC"
 					}
 				}
 			},

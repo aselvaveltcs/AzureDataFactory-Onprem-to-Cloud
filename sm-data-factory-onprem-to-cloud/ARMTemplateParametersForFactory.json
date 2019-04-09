@@ -8,6 +8,9 @@
 		"AzureBlobStorage_LinkedService_connectionString": {
 			"value": ""
 		},
+		"AzureBlob_HDInsight_LinkedService_connectionString": {
+			"value": ""
+		},
 		"HDInsight_Linked_Service_clusterPassword": {
 			"value": ""
 		},
@@ -18,9 +21,6 @@
 			"value": ""
 		},
 		"OnPrem_MySQL_Linked_Service_connectionString": {
-			"value": ""
-		},
-		"AzureBlob_HDInsight_LinkedService_connectionString": {
 			"value": ""
 		},
 		"Address_Blob_Storage_properties_typeProperties_fileName": {
@@ -70,6 +70,9 @@
 		},
 		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 			"value": "sshuser"
+		},
+		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+			"value": "sm-pig-output"
 		}
 	}
 }
