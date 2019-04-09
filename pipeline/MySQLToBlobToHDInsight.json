@@ -196,12 +196,6 @@
 						]
 					},
 					{
-						"activity": "Address_Table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "PigOutputFolders",
 						"dependencyConditions": [
 							"Succeeded"
@@ -244,7 +238,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "Inventory_Table",
+						"activity": "Address_Table",
 						"dependencyConditions": [
 							"Succeeded"
 						]
