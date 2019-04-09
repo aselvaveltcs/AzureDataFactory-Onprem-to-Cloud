@@ -267,6 +267,63 @@
 					},
 					"enableLogging": true
 				}
+			},
+			{
+				"name": "Overdue_Dvds_Hive",
+				"type": "HDInsightHive",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"scriptPath": "sm-scripts/hive-scripts/data-factory-hive-script.hql",
+					"defines": {
+						"inputcustomertable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
+						"inputfilmtable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
+						"inputinventorytable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
+						"inputrentaltable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
+						"inputaddresstable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/",
+						"outputoverduetable": "wasbs://sm-hive-output@sm1storageaccount1.blob.core.windows.net/overdue-dvds/"
+					},
+					"scriptLinkedService": {
+						"referenceName": "AzureBlobStorage_LinkedService",
+						"type": "LinkedServiceReference"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "HDInsight_Linked_Service",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "HiveOutputFolders",
+				"description": "It will delete all hive output folders from Blob storage",
+				"type": "Delete",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DeleteHiveOutputFolders",
+						"type": "DatasetReference"
+					},
+					"recursive": true,
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "AzureBlobStorage_LinkedService",
+							"type": "LinkedServiceReference"
+						},
+						"path": "delete-logs"
+					},
+					"enableLogging": true
+				}
 			}
 		]
 	},
