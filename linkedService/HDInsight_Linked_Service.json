@@ -5,7 +5,7 @@
 		"type": "HDInsightOnDemand",
 		"typeProperties": {
 			"clusterType": "hadoop",
-			"clusterSize": 4,
+			"clusterSize": 5,
 			"timeToLive": "00:40:00",
 			"version": "3.6",
 			"hostSubscriptionId": "a001c005-dea7-42da-9342-bc1c11fc44aa",
@@ -31,7 +31,7 @@
 			"zookeeperNodeSize": "",
 			"subnetName": "",
 			"virtualNetworkId": "",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNNLURBVEEtRkFDVE9SWS1PTlBSRU0tVE8tQ0xPVURfNWEyNGM2MGYtOTliOS00M2FlLThiOTUtODA5ZGM0MDNlYzc5Ig0KfQ=="
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNNLURBVEEtRkFDVE9SWS1PTlBSRU0tVE8tQ0xPVURfMWE3ODE3MDQtZmNmYy00OWJiLWI1MDgtNzAyZjNlYzkyNzI4Ig0KfQ=="
 		}
 	}
 }
