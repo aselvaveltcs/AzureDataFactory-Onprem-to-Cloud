@@ -611,6 +611,7 @@
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "It will delete all pig output folders from Blob storage",
 				"activities": [
 					{
 						"name": "Film_Table",
@@ -826,12 +827,6 @@
 								]
 							},
 							{
-								"activity": "Address_Table",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
 								"activity": "PigOutputFolders",
 								"dependencyConditions": [
 									"Succeeded"
@@ -875,7 +870,7 @@
 						"type": "Delete",
 						"dependsOn": [
 							{
-								"activity": "Inventory_Table",
+								"activity": "Address_Table",
 								"dependencyConditions": [
 									"Succeeded"
 								]
