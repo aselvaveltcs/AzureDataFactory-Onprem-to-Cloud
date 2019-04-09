@@ -47,6 +47,14 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/customer"
 		},
+		"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-hive-output"
+		},
 		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "sm-pig-output"
@@ -98,14 +106,6 @@
 		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 			"type": "string",
 			"defaultValue": "sshuser"
-		},
-		"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": ""
-		},
-		"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "sm-hive-output"
 		},
 		"containerUri": {
 			"type": "string",
@@ -164,6 +164,12 @@
 					"Customer_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Customer_Blob_Storage_properties_typeProperties_folderPath')]"
 					},
+					"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
+						"value": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_fileName')]"
+					},
+					"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
+						"value": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_folderPath')]"
+					},
 					"DeletePigOutputFolders_properties_typeProperties_folderPath": {
 						"value": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
 					},
@@ -202,12 +208,6 @@
 					},
 					"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName')]"
-					},
-					"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
-						"value": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_fileName')]"
-					},
-					"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
-						"value": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_folderPath')]"
 					}
 				}
 			},
