@@ -47,6 +47,10 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/customer"
 		},
+		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-pig-output"
+		},
 		"Film_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Film-',pipeline().RunId, '.txt')"
@@ -95,9 +99,13 @@
 			"type": "string",
 			"defaultValue": "sshuser"
 		},
-		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+		"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "sm-pig-output"
+			"defaultValue": ""
+		},
+		"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-hive-output"
 		},
 		"containerUri": {
 			"type": "string",
@@ -156,6 +164,9 @@
 					"Customer_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Customer_Blob_Storage_properties_typeProperties_folderPath')]"
 					},
+					"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+						"value": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
+					},
 					"Film_Blob_Storage_properties_typeProperties_fileName": {
 						"value": "[parameters('Film_Blob_Storage_properties_typeProperties_fileName')]"
 					},
@@ -192,8 +203,11 @@
 					"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 						"value": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName')]"
 					},
-					"DeletePigOutputFolders_properties_typeProperties_folderPath": {
-						"value": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
+					"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
+						"value": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_fileName')]"
+					},
+					"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
+						"value": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_folderPath')]"
 					}
 				}
 			},

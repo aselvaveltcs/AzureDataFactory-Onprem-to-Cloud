@@ -47,6 +47,10 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/customer"
 		},
+		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-pig-output"
+		},
 		"Film_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Film-',pipeline().RunId, '.txt')"
@@ -95,15 +99,410 @@
 			"type": "string",
 			"defaultValue": "sshuser"
 		},
-		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+		"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "sm-pig-output"
+			"defaultValue": ""
+		},
+		"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-hive-output"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/MySQLToBlobToHDInsight')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Film_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `film`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Film_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Film_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Customer_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `customer`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Customer_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Customer_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Inventory_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `inventory`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Inventory_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Inventory_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Rental_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select * from `rental`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Rental_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Rental_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Address_Table",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RelationalSource",
+								"query": "select address_id,address, address2 ,\ndistrict ,\ncity_id ,\npostal_code,\nphone\n from `address`"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Address_OnPrem",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Address_Blob_Storage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Pig_Data_Transfrm",
+						"type": "HDInsightPig",
+						"dependsOn": [
+							{
+								"activity": "Film_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Customer_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Inventory_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Rental_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "PigOutputFolders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"scriptPath": "sm-scripts/pig-scripts/data-factory-pig-script.pig",
+							"defines": {
+								"InputCustomer": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/customer/",
+								"InputFilm": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/film/",
+								"InputInventory": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/Inventory/",
+								"InputRental": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/rental/",
+								"InputAddress": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/address/",
+								"OutputCustomer": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
+								"OutputFilm": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
+								"OutputInventory": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
+								"OutputRental": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
+								"OutputAddress": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/"
+							},
+							"scriptLinkedService": {
+								"referenceName": "AzureBlobStorage_LinkedService",
+								"type": "LinkedServiceReference"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "HDInsight_Linked_Service",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "PigOutputFolders",
+						"description": "It will delete all pig output folders from Blob storage",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Address_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DeletePigOutputFolders",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"recursive": true,
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzureBlobStorage_LinkedService",
+									"type": "LinkedServiceReference"
+								},
+								"path": "delete-logs"
+							},
+							"enableLogging": true
+						}
+					},
+					{
+						"name": "Overdue_Dvds_Hive",
+						"type": "HDInsightHive",
+						"dependsOn": [
+							{
+								"activity": "HiveOutputFolders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"scriptPath": "sm-scripts/hive-scripts/data-factory-hive-script.hql",
+							"defines": {
+								"inputcustomertable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
+								"inputfilmtable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
+								"inputinventorytable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
+								"inputrentaltable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
+								"inputaddresstable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/",
+								"outputoverduetable": "wasbs://sm-hive-output@sm1storageaccount1.blob.core.windows.net/overdue-dvds/"
+							},
+							"scriptLinkedService": {
+								"referenceName": "AzureBlobStorage_LinkedService",
+								"type": "LinkedServiceReference"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "HDInsight_Linked_Service",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "HiveOutputFolders",
+						"description": "It will delete all hive output folders from Blob storage",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Pig_Data_Transfrm",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DeleteHiveOutputFolders",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"recursive": true,
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzureBlobStorage_LinkedService",
+									"type": "LinkedServiceReference"
+								},
+								"path": "delete-logs"
+							},
+							"enableLogging": true
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Film_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Film_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Customer_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Customer_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Inventory_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Inventory_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Rental_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Rental_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/datasets/Address_OnPrem')]",
+				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
+				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
+				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]",
+				"[concat(variables('factoryId'), '/datasets/DeleteHiveOutputFolders')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Address_Blob_Storage')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -242,6 +641,34 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DeletePigOutputFolders')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"folderPath": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
 			]
 		},
 		{
@@ -610,7 +1037,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DeletePigOutputFolders')]",
+			"name": "[concat(parameters('factoryName'), '/DeleteHiveOutputFolders')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -630,325 +1057,12 @@
 						"skipLineCount": 0,
 						"firstRowAsHeader": false
 					},
-					"folderPath": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
+					"fileName": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_folderPath')]"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MySQLToBlobToHDInsight')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Film_Table",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 2,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RelationalSource",
-								"query": "select * from `film`"
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Film_OnPrem",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Film_Blob_Storage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Customer_Table",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RelationalSource",
-								"query": "select * from `customer`"
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Customer_OnPrem",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Customer_Blob_Storage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Inventory_Table",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 2,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RelationalSource",
-								"query": "select * from `inventory`"
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Inventory_OnPrem",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Inventory_Blob_Storage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Rental_Table",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RelationalSource",
-								"query": "select * from `rental`"
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Rental_OnPrem",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Rental_Blob_Storage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Address_Table",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "RelationalSource",
-								"query": "select address_id,address, address2 ,\ndistrict ,\ncity_id ,\npostal_code,\nphone\n from `address`"
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Address_OnPrem",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Address_Blob_Storage",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Pig_Data_Transfrm",
-						"type": "HDInsightPig",
-						"dependsOn": [
-							{
-								"activity": "Film_Table",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Customer_Table",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Inventory_Table",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Rental_Table",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "PigOutputFolders",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"scriptPath": "sm-scripts/pig-scripts/data-factory-pig-script.pig",
-							"defines": {
-								"InputCustomer": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/customer/",
-								"InputFilm": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/film/",
-								"InputInventory": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/Inventory/",
-								"InputRental": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/rental/",
-								"InputAddress": "wasbs://sm-onprem-to-cloud-source@sm1storageaccount1.blob.core.windows.net/address/",
-								"OutputCustomer": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
-								"OutputFilm": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
-								"OutputInventory": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
-								"OutputRental": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
-								"OutputAddress": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/"
-							},
-							"scriptLinkedService": {
-								"referenceName": "AzureBlobStorage_LinkedService",
-								"type": "LinkedServiceReference"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "HDInsight_Linked_Service",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "PigOutputFolders",
-						"description": "It will delete all pig output folders from Blob storage",
-						"type": "Delete",
-						"dependsOn": [
-							{
-								"activity": "Address_Table",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DeletePigOutputFolders",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"recursive": true,
-							"logStorageSettings": {
-								"linkedServiceName": {
-									"referenceName": "AzureBlobStorage_LinkedService",
-									"type": "LinkedServiceReference"
-								},
-								"path": "delete-logs"
-							},
-							"enableLogging": true
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Film_OnPrem')]",
-				"[concat(variables('factoryId'), '/datasets/Film_Blob_Storage')]",
-				"[concat(variables('factoryId'), '/datasets/Customer_OnPrem')]",
-				"[concat(variables('factoryId'), '/datasets/Customer_Blob_Storage')]",
-				"[concat(variables('factoryId'), '/datasets/Inventory_OnPrem')]",
-				"[concat(variables('factoryId'), '/datasets/Inventory_Blob_Storage')]",
-				"[concat(variables('factoryId'), '/datasets/Rental_OnPrem')]",
-				"[concat(variables('factoryId'), '/datasets/Rental_Blob_Storage')]",
-				"[concat(variables('factoryId'), '/datasets/Address_OnPrem')]",
-				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
-				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
-				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]"
 			]
 		}
 	]

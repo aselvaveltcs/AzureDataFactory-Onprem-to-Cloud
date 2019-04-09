@@ -35,6 +35,9 @@
 		"Customer_Blob_Storage_properties_typeProperties_folderPath": {
 			"value": "sm-onprem-to-cloud-source/customer"
 		},
+		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+			"value": "sm-pig-output"
+		},
 		"Film_Blob_Storage_properties_typeProperties_fileName": {
 			"value": "@concat('Film-',pipeline().RunId, '.txt')"
 		},
@@ -71,8 +74,11 @@
 		"HDInsight_Linked_Service_properties_typeProperties_clusterSshUserName": {
 			"value": "sshuser"
 		},
-		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
-			"value": "sm-pig-output"
+		"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
+			"value": ""
+		},
+		"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
+			"value": "sm-hive-output"
 		},
 		"containerUri": {
 			"value": ""

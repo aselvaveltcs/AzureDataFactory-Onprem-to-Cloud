@@ -47,6 +47,10 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/customer"
 		},
+		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-pig-output"
+		},
 		"Film_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Film-',pipeline().RunId, '.txt')"
@@ -95,9 +99,13 @@
 			"type": "string",
 			"defaultValue": "sshuser"
 		},
-		"DeletePigOutputFolders_properties_typeProperties_folderPath": {
+		"DeleteHiveOutputFolders_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "sm-pig-output"
+			"defaultValue": ""
+		},
+		"DeleteHiveOutputFolders_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-hive-output"
 		}
 	},
 	"variables": {
@@ -198,6 +206,34 @@
 						"type": "Expression"
 					},
 					"folderPath": "[parameters('Customer_Blob_Storage_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DeletePigOutputFolders')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"folderPath": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
 				}
 			},
 			"dependsOn": [
@@ -374,7 +410,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DeletePigOutputFolders')]",
+			"name": "[concat(parameters('factoryName'), '/DeleteHiveOutputFolders')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -394,7 +430,8 @@
 						"skipLineCount": 0,
 						"firstRowAsHeader": false
 					},
-					"folderPath": "[parameters('DeletePigOutputFolders_properties_typeProperties_folderPath')]"
+					"fileName": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('DeleteHiveOutputFolders_properties_typeProperties_folderPath')]"
 				}
 			},
 			"dependsOn": [
@@ -900,6 +937,82 @@
 							},
 							"enableLogging": true
 						}
+					},
+					{
+						"name": "Overdue_Dvds_Hive",
+						"type": "HDInsightHive",
+						"dependsOn": [
+							{
+								"activity": "HiveOutputFolders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"scriptPath": "sm-scripts/hive-scripts/data-factory-hive-script.hql",
+							"defines": {
+								"inputcustomertable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/customer/",
+								"inputfilmtable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/film/",
+								"inputinventorytable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/inventory/",
+								"inputrentaltable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/rental/",
+								"inputaddresstable": "wasbs://sm-pig-output@sm1storageaccount1.blob.core.windows.net/address/",
+								"outputoverduetable": "wasbs://sm-hive-output@sm1storageaccount1.blob.core.windows.net/overdue-dvds/"
+							},
+							"scriptLinkedService": {
+								"referenceName": "AzureBlobStorage_LinkedService",
+								"type": "LinkedServiceReference"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "HDInsight_Linked_Service",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "HiveOutputFolders",
+						"description": "It will delete all hive output folders from Blob storage",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Pig_Data_Transfrm",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DeleteHiveOutputFolders",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"recursive": true,
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzureBlobStorage_LinkedService",
+									"type": "LinkedServiceReference"
+								},
+								"path": "delete-logs"
+							},
+							"enableLogging": true
+						}
 					}
 				],
 				"annotations": []
@@ -917,7 +1030,8 @@
 				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
 				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
-				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]"
+				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]",
+				"[concat(variables('factoryId'), '/datasets/DeleteHiveOutputFolders')]"
 			]
 		},
 		{
