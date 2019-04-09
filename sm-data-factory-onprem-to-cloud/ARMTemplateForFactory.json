@@ -961,7 +961,7 @@
 				"typeProperties": {
 					"clusterType": "hadoop",
 					"clusterSize": 4,
-					"timeToLive": "00:30:00",
+					"timeToLive": "00:40:00",
 					"version": "3.6",
 					"hostSubscriptionId": "[parameters('HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId')]",
 					"clusterResourceGroup": "[parameters('HDInsight_Linked_Service_properties_typeProperties_clusterResourceGroup')]",
