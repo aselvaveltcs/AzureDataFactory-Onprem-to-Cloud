@@ -277,7 +277,7 @@
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "Pig_Data_Transfrm",
+						"activity": "DeleteHiveOutputIfExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -384,6 +384,14 @@
 			{
 				"name": "HiveOutputfiles",
 				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Pig_Data_Transfrm",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -393,11 +401,58 @@
 				},
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "PigAddressOutputFile",
+						"referenceName": "HiveOutputOverdueFiles",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
 						"exists"
+					]
+				}
+			},
+			{
+				"name": "DeleteHiveOutputIfExists",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "HiveOutputfiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('HiveOutputfiles').output.exists",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Delete1",
+							"description": "It will delete all pig output folders from Blob storage",
+							"type": "Delete",
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DeletePigOutputFolders",
+									"type": "DatasetReference"
+								},
+								"recursive": true,
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobStorage_LinkedService",
+										"type": "LinkedServiceReference"
+									},
+									"path": "delete-logs"
+								},
+								"enableLogging": true
+							}
+						}
 					]
 				}
 			}
