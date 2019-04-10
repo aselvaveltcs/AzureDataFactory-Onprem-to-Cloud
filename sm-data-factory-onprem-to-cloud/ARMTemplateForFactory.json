@@ -75,6 +75,14 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/Inventory"
 		},
+		"PigOutputFiles_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"PigOutputFiles_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-pig-output/address"
+		},
 		"Rental_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Rental-',pipeline().RunId, '.txt')"
@@ -518,7 +526,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "DeletePigOutputFolders",
+								"referenceName": "PigOutputFiles",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
@@ -544,6 +552,7 @@
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
 				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
 				"[concat(variables('factoryId'), '/datasets/DeleteHiveOutputFolders')]",
+				"[concat(variables('factoryId'), '/datasets/PigOutputFiles')]",
 				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]"
 			]
 		},
@@ -916,6 +925,35 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/OnPrem_MySQL_Linked_Service')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PigOutputFiles')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": "[parameters('PigOutputFiles_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('PigOutputFiles_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
 			]
 		},
 		{

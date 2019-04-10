@@ -56,6 +56,12 @@
 		"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
 			"value": "sm-onprem-to-cloud-source/Inventory"
 		},
+		"PigOutputFiles_properties_typeProperties_fileName": {
+			"value": ""
+		},
+		"PigOutputFiles_properties_typeProperties_folderPath": {
+			"value": "sm-pig-output/address"
+		},
 		"Rental_Blob_Storage_properties_typeProperties_fileName": {
 			"value": "@concat('Rental-',pipeline().RunId, '.txt')"
 		},

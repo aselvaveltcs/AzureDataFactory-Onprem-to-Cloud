@@ -75,6 +75,14 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/Inventory"
 		},
+		"PigOutputFiles_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"PigOutputFiles_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-pig-output/address"
+		},
 		"Rental_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Rental-',pipeline().RunId, '.txt')"
@@ -184,6 +192,12 @@
 					},
 					"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Inventory_Blob_Storage_properties_typeProperties_folderPath')]"
+					},
+					"PigOutputFiles_properties_typeProperties_fileName": {
+						"value": "[parameters('PigOutputFiles_properties_typeProperties_fileName')]"
+					},
+					"PigOutputFiles_properties_typeProperties_folderPath": {
+						"value": "[parameters('PigOutputFiles_properties_typeProperties_folderPath')]"
 					},
 					"Rental_Blob_Storage_properties_typeProperties_fileName": {
 						"value": "[parameters('Rental_Blob_Storage_properties_typeProperties_fileName')]"
