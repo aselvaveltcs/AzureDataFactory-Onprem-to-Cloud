@@ -1,5 +1,5 @@
 {
-	"name": "PigOutputFiles",
+	"name": "PigAddressOutputFile",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage_LinkedService",
