@@ -194,12 +194,6 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "PigOutputFolders",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"policy": {
@@ -231,41 +225,6 @@
 				"linkedServiceName": {
 					"referenceName": "HDInsight_Linked_Service",
 					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "PigOutputFolders",
-				"description": "It will delete all pig output folders from Blob storage",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "Address_Table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "DeletePigOutputFolders",
-						"type": "DatasetReference"
-					},
-					"recursive": true,
-					"logStorageSettings": {
-						"linkedServiceName": {
-							"referenceName": "AzureBlobStorage_LinkedService",
-							"type": "LinkedServiceReference"
-						},
-						"path": "delete-logs"
-					},
-					"enableLogging": true
 				}
 			},
 			{
@@ -343,7 +302,78 @@
 			},
 			{
 				"name": "If Condition1",
-				"type": "IfCondition"
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('Get Metadata1').output.exists",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "PigOutputFolders",
+							"description": "It will delete all pig output folders from Blob storage",
+							"type": "Delete",
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DeletePigOutputFolders",
+									"type": "DatasetReference"
+								},
+								"recursive": true,
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "AzureBlobStorage_LinkedService",
+										"type": "LinkedServiceReference"
+									},
+									"path": "delete-logs"
+								},
+								"enableLogging": true
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Address_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DeletePigOutputFolders",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"exists"
+					]
+				}
 			}
 		]
 	},
