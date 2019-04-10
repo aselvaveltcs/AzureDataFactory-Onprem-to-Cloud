@@ -196,7 +196,7 @@
 						]
 					},
 					{
-						"activity": "If Condition1",
+						"activity": "DeletePigOutputIfExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -307,11 +307,11 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "DeletePigOutputIfExists",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "AddressDataExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -319,7 +319,7 @@
 				],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('Get Metadata1').output.exists",
+						"value": "@activity('AddressDataExists').output.exists",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -354,7 +354,7 @@
 				}
 			},
 			{
-				"name": "Get Metadata1",
+				"name": "AddressDataExists",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
