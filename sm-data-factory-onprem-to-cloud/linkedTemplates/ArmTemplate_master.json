@@ -67,6 +67,14 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/film"
 		},
+		"HiveOutputOverdueFiles_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"HiveOutputOverdueFiles_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-hive-output/overdue-dvds"
+		},
 		"Inventory_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Inventory-',pipeline().RunId, '.txt')"
@@ -75,11 +83,11 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/Inventory"
 		},
-		"PigOutputFiles_properties_typeProperties_fileName": {
+		"PigAddressOutputFile_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": ""
 		},
-		"PigOutputFiles_properties_typeProperties_folderPath": {
+		"PigAddressOutputFile_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "sm-pig-output/address"
 		},
@@ -187,17 +195,23 @@
 					"Film_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Film_Blob_Storage_properties_typeProperties_folderPath')]"
 					},
+					"HiveOutputOverdueFiles_properties_typeProperties_fileName": {
+						"value": "[parameters('HiveOutputOverdueFiles_properties_typeProperties_fileName')]"
+					},
+					"HiveOutputOverdueFiles_properties_typeProperties_folderPath": {
+						"value": "[parameters('HiveOutputOverdueFiles_properties_typeProperties_folderPath')]"
+					},
 					"Inventory_Blob_Storage_properties_typeProperties_fileName": {
 						"value": "[parameters('Inventory_Blob_Storage_properties_typeProperties_fileName')]"
 					},
 					"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
 						"value": "[parameters('Inventory_Blob_Storage_properties_typeProperties_folderPath')]"
 					},
-					"PigOutputFiles_properties_typeProperties_fileName": {
-						"value": "[parameters('PigOutputFiles_properties_typeProperties_fileName')]"
+					"PigAddressOutputFile_properties_typeProperties_fileName": {
+						"value": "[parameters('PigAddressOutputFile_properties_typeProperties_fileName')]"
 					},
-					"PigOutputFiles_properties_typeProperties_folderPath": {
-						"value": "[parameters('PigOutputFiles_properties_typeProperties_folderPath')]"
+					"PigAddressOutputFile_properties_typeProperties_folderPath": {
+						"value": "[parameters('PigAddressOutputFile_properties_typeProperties_folderPath')]"
 					},
 					"Rental_Blob_Storage_properties_typeProperties_fileName": {
 						"value": "[parameters('Rental_Blob_Storage_properties_typeProperties_fileName')]"
@@ -226,6 +240,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
 		}
 	]
 }

@@ -50,16 +50,22 @@
 		"Film_Blob_Storage_properties_typeProperties_folderPath": {
 			"value": "sm-onprem-to-cloud-source/film"
 		},
+		"HiveOutputOverdueFiles_properties_typeProperties_fileName": {
+			"value": ""
+		},
+		"HiveOutputOverdueFiles_properties_typeProperties_folderPath": {
+			"value": "sm-hive-output/overdue-dvds"
+		},
 		"Inventory_Blob_Storage_properties_typeProperties_fileName": {
 			"value": "@concat('Inventory-',pipeline().RunId, '.txt')"
 		},
 		"Inventory_Blob_Storage_properties_typeProperties_folderPath": {
 			"value": "sm-onprem-to-cloud-source/Inventory"
 		},
-		"PigOutputFiles_properties_typeProperties_fileName": {
+		"PigAddressOutputFile_properties_typeProperties_fileName": {
 			"value": ""
 		},
-		"PigOutputFiles_properties_typeProperties_folderPath": {
+		"PigAddressOutputFile_properties_typeProperties_folderPath": {
 			"value": "sm-pig-output/address"
 		},
 		"Rental_Blob_Storage_properties_typeProperties_fileName": {

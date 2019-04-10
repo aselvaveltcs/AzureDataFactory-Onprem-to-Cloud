@@ -67,6 +67,14 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/film"
 		},
+		"HiveOutputOverdueFiles_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"HiveOutputOverdueFiles_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "sm-hive-output/overdue-dvds"
+		},
 		"Inventory_Blob_Storage_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('Inventory-',pipeline().RunId, '.txt')"
@@ -75,11 +83,11 @@
 			"type": "string",
 			"defaultValue": "sm-onprem-to-cloud-source/Inventory"
 		},
-		"PigOutputFiles_properties_typeProperties_fileName": {
+		"PigAddressOutputFile_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": ""
 		},
-		"PigOutputFiles_properties_typeProperties_folderPath": {
+		"PigAddressOutputFile_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "sm-pig-output/address"
 		},
@@ -340,7 +348,7 @@
 								]
 							},
 							{
-								"activity": "If Condition1",
+								"activity": "DeletePigOutputIfExists",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -423,7 +431,7 @@
 						"type": "Delete",
 						"dependsOn": [
 							{
-								"activity": "Pig_Data_Transfrm",
+								"activity": "DeleteHiveOutputIfExists",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -455,11 +463,11 @@
 						}
 					},
 					{
-						"name": "If Condition1",
+						"name": "DeletePigOutputIfExists",
 						"type": "IfCondition",
 						"dependsOn": [
 							{
-								"activity": "Get Metadata1",
+								"activity": "AddressDataExists",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -468,7 +476,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@activity('Get Metadata1').output.exists",
+								"value": "@activity('AddressDataExists').output.exists",
 								"type": "Expression"
 							},
 							"ifTrueActivities": [
@@ -506,7 +514,7 @@
 						}
 					},
 					{
-						"name": "Get Metadata1",
+						"name": "AddressDataExists",
 						"type": "GetMetadata",
 						"dependsOn": [
 							{
@@ -526,12 +534,93 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "PigOutputFiles",
+								"referenceName": "PigAddressOutputFile",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
 							"fieldList": [
 								"exists"
+							]
+						}
+					},
+					{
+						"name": "HiveOutputfiles",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Pig_Data_Transfrm",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "HiveOutputOverdueFiles",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"exists"
+							]
+						}
+					},
+					{
+						"name": "DeleteHiveOutputIfExists",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "HiveOutputfiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('HiveOutputfiles').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Delete1",
+									"description": "It will delete all pig output folders from Blob storage",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "DeletePigOutputFolders",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"recursive": true,
+										"logStorageSettings": {
+											"linkedServiceName": {
+												"referenceName": "AzureBlobStorage_LinkedService",
+												"type": "LinkedServiceReference"
+											},
+											"path": "delete-logs"
+										},
+										"enableLogging": true
+									}
+								}
 							]
 						}
 					}
@@ -552,7 +641,8 @@
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
 				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
 				"[concat(variables('factoryId'), '/datasets/DeleteHiveOutputFolders')]",
-				"[concat(variables('factoryId'), '/datasets/PigOutputFiles')]",
+				"[concat(variables('factoryId'), '/datasets/PigAddressOutputFile')]",
+				"[concat(variables('factoryId'), '/datasets/HiveOutputOverdueFiles')]",
 				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]"
 			]
 		},
@@ -859,6 +949,35 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/HiveOutputOverdueFiles')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_LinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
+					},
+					"fileName": "[parameters('HiveOutputOverdueFiles_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('HiveOutputOverdueFiles_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Inventory_Blob_Storage')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -928,7 +1047,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PigOutputFiles')]",
+			"name": "[concat(parameters('factoryName'), '/PigAddressOutputFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -948,8 +1067,8 @@
 						"skipLineCount": 0,
 						"firstRowAsHeader": false
 					},
-					"fileName": "[parameters('PigOutputFiles_properties_typeProperties_fileName')]",
-					"folderPath": "[parameters('PigOutputFiles_properties_typeProperties_folderPath')]"
+					"fileName": "[parameters('PigAddressOutputFile_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('PigAddressOutputFile_properties_typeProperties_folderPath')]"
 				}
 			},
 			"dependsOn": [
