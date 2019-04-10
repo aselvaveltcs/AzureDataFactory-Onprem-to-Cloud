@@ -373,7 +373,7 @@
 				},
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DeletePigOutputFolders",
+						"referenceName": "PigOutputFiles",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
