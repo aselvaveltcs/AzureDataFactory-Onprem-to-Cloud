@@ -23,7 +23,7 @@ Store INVENTORY_DATA_UNQ into '$OutputInventory' USING PigStorage (',');
 RENTAL_DATA = FOREACH RENTAL GENERATE  (int) $0 AS rental_id, (int) $2 AS inventory_id , (int) $3 AS customer_id,  (chararray) $1 AS rental_date, (chararray) $4 AS return_date  ;
 RENTAL_DATA_UNQ = DISTINCT RENTAL_DATA;
 RENTAL_DATA_FILTER = FILTER RENTAL_DATA_UNQ BY return_date == 'NO_DATA'  ;
-RENTAL_DATA_UNQ = FOREACH RENTAL_DATA_FILTER  GENERATE rental_id, inventory_id, customer_id,  ToDate(SUBSTRING(REPLACE(rental_date, 'NO_DATA',''),1,10),'YYYY-MM-DD') AS rental_date; 
+RENTAL_DATA_UNQ = FOREACH RENTAL_DATA_FILTER  GENERATE rental_id, inventory_id, customer_id, (chararray)  SUBSTRING(REPLACE(rental_date, 'NO_DATA',''),0,10) AS rental_date; 
 Store RENTAL_DATA_UNQ into '$OutputRental' USING PigStorage (','); 
 
 
