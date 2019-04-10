@@ -332,7 +332,7 @@
 								]
 							},
 							{
-								"activity": "PigOutputFolders",
+								"activity": "If Condition1",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -368,43 +368,6 @@
 						"linkedServiceName": {
 							"referenceName": "HDInsight_Linked_Service",
 							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "PigOutputFolders",
-						"description": "It will delete all pig output folders from Blob storage",
-						"type": "Delete",
-						"dependsOn": [
-							{
-								"activity": "Address_Table",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DeletePigOutputFolders",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"recursive": true,
-							"logStorageSettings": {
-								"linkedServiceName": {
-									"referenceName": "AzureBlobStorage_LinkedService",
-									"type": "LinkedServiceReference"
-								},
-								"path": "delete-logs"
-							},
-							"enableLogging": true
 						}
 					},
 					{
@@ -482,6 +445,87 @@
 							},
 							"enableLogging": true
 						}
+					},
+					{
+						"name": "If Condition1",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@activity('Get Metadata1').output.exists",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "PigOutputFolders",
+									"description": "It will delete all pig output folders from Blob storage",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "DeletePigOutputFolders",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"recursive": true,
+										"logStorageSettings": {
+											"linkedServiceName": {
+												"referenceName": "AzureBlobStorage_LinkedService",
+												"type": "LinkedServiceReference"
+											},
+											"path": "delete-logs"
+										},
+										"enableLogging": true
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Address_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DeletePigOutputFolders",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"exists"
+							]
+						}
 					}
 				],
 				"annotations": []
@@ -499,8 +543,8 @@
 				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
 				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
-				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]",
-				"[concat(variables('factoryId'), '/datasets/DeleteHiveOutputFolders')]"
+				"[concat(variables('factoryId'), '/datasets/DeleteHiveOutputFolders')]",
+				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]"
 			]
 		},
 		{
@@ -960,7 +1004,7 @@
 				"type": "HDInsightOnDemand",
 				"typeProperties": {
 					"clusterType": "hadoop",
-					"clusterSize": 4,
+					"clusterSize": 5,
 					"timeToLive": "00:40:00",
 					"version": "3.6",
 					"hostSubscriptionId": "[parameters('HDInsight_Linked_Service_properties_typeProperties_hostSubscriptionId')]",
