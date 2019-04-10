@@ -340,6 +340,10 @@
 					},
 					"enableLogging": true
 				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition"
 			}
 		]
 	},
