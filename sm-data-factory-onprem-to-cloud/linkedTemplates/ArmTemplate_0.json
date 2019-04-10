@@ -980,7 +980,7 @@
 						"type": "HDInsightHive",
 						"dependsOn": [
 							{
-								"activity": "HiveOutputFolders",
+								"activity": "DeleteHiveOutputIfExists",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1012,43 +1012,6 @@
 						"linkedServiceName": {
 							"referenceName": "HDInsight_Linked_Service",
 							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "HiveOutputFolders",
-						"description": "It will delete all hive output folders from Blob storage",
-						"type": "Delete",
-						"dependsOn": [
-							{
-								"activity": "DeleteHiveOutputIfExists",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataset": {
-								"referenceName": "DeleteHiveOutputFolders",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"recursive": true,
-							"logStorageSettings": {
-								"linkedServiceName": {
-									"referenceName": "AzureBlobStorage_LinkedService",
-									"type": "LinkedServiceReference"
-								},
-								"path": "delete-logs"
-							},
-							"enableLogging": true
 						}
 					},
 					{
@@ -1181,8 +1144,8 @@
 							},
 							"ifTrueActivities": [
 								{
-									"name": "Delete1",
-									"description": "It will delete all pig output folders from Blob storage",
+									"name": "HiveOutputOverdueFiles",
+									"description": "It will delete all hive output folders (overdue) from Blob storage",
 									"type": "Delete",
 									"dependsOn": [],
 									"policy": {
@@ -1195,7 +1158,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"dataset": {
-											"referenceName": "DeletePigOutputFolders",
+											"referenceName": "HiveOutputOverdueFiles",
 											"type": "DatasetReference",
 											"parameters": {}
 										},
@@ -1229,7 +1192,6 @@
 				"[concat(variables('factoryId'), '/datasets/Address_Blob_Storage')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_LinkedService')]",
 				"[concat(variables('factoryId'), '/linkedServices/HDInsight_Linked_Service')]",
-				"[concat(variables('factoryId'), '/datasets/DeleteHiveOutputFolders')]",
 				"[concat(variables('factoryId'), '/datasets/PigAddressOutputFile')]",
 				"[concat(variables('factoryId'), '/datasets/HiveOutputOverdueFiles')]",
 				"[concat(variables('factoryId'), '/datasets/DeletePigOutputFolders')]"
